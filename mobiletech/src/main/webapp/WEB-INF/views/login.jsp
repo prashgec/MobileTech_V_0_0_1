@@ -2,9 +2,11 @@
 
 <div class="clearfix pushUp">
 	<br>
-	<h1>&nbsp;&nbsp;&nbsp;Here is a bit about MobileTech</h1>
+	<h1>&nbsp;&nbsp;&nbsp;MobileTech Wishes "Happy Holi" to all Users</h1>
 	<hr>
-	<div class="clearfix">
+	
+	<img alt="Holi" width="100%" src="<c:url value='/resources/images/banner.png'/>">
+	<!-- <div class="clearfix">
 		<br>
 		<br>
 		<p>
@@ -31,7 +33,9 @@
 						</div>
 			</a></li>
 		</ul>
-	</div>
+	</div> -->
+	
+	
 </div>
 
 <%@ include file="footer.jsp"%>
