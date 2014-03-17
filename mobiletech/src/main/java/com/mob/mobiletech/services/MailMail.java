@@ -11,7 +11,7 @@ public class MailMail
 		this.mailSender = mailSender;
 	}
  
-	public void sendMail(String from, String to, String subject, String msg) {
+	public void sendMail(String from,String to, String subject, String msg) {
  
 		SimpleMailMessage message = new SimpleMailMessage();
  
@@ -19,6 +19,11 @@ public class MailMail
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(msg);
+		try{
 		mailSender.send(message);	
-	}
+		}catch(Exception e)
+		{
+			return;
+		}
+ }
 }

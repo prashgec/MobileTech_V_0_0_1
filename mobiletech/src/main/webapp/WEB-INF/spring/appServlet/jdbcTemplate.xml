@@ -23,7 +23,7 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost/test"/>
-    <!-- <property name="username" value="root"/>
+   <!--  <property name="username" value="root"/>
 		<property name="password" value="system"/>  -->
 		<property name="username" value="mobiletech"/>
 		<property name="password" value="password"/>  

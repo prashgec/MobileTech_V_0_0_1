@@ -68,10 +68,10 @@ public class ViewTransactionController {
 	      
 		else if (userLoggedin.getRole()==1)
 				{
-			 List<Object> tnxList= baseDAO.fetchAll(userid, "prntId", TransactionRecharge.class.getName());
+			 List<Object> tnxList= baseDAO.fetchAllDesc(userid, "prntId","tnxId", TransactionRecharge.class.getName());
 		      return new ModelAndView("viewtnx", "tnxList", tnxList);
 				}
-	      List<Object> tnxList= baseDAO.fetchAll(userid, "userId", TransactionRecharge.class.getName());
+	      List<Object> tnxList= baseDAO.fetchAllDesc(userid, "userId","tnxId", TransactionRecharge.class.getName());
 	      return new ModelAndView("viewtnx", "tnxList", tnxList);
 	   }
 	   

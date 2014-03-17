@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,7 +29,7 @@ import com.mob.mobiletech.util.CommonUtils;
  */
 @Controller
 public class CreateRequestController {
-	
+	private final Logger LOGGER = Logger.getLogger(CreateRequestController.class);
 	@Autowired
 	BaseDAO baseDAO;
 	
@@ -52,6 +53,7 @@ public class CreateRequestController {
 	{
 	TransactionRequest transactionRequest= new TransactionRequest();
 	User userLoggedin= (User)request.getSession().getAttribute("user");
+	LOGGER.info("Enter createRequestLoad userid ::"+userLoggedin.getUserId());
 	model.addAttribute("menu", "createrequest");
 	model.addAttribute("action","create");
 	transactionRequest.setRequestedBy(userLoggedin.getUserId());
@@ -66,11 +68,12 @@ public class CreateRequestController {
 	public ModelAndView createRequestSubmit(@ModelAttribute("SpringWeb")TransactionRequest tnxrequest, HttpServletRequest request,ModelMap model) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
-		
+		LOGGER.info("Enter createRequestSubmit userid ::"+userLoggedin.getUserId());
 		baseDAO.saveOrUpdate(tnxrequest);
 		
 		model.addAttribute("access", "read");
 		model.addAttribute("menu", "profile");
+		LOGGER.info("Enter createRequestSubmit userid ::"+userLoggedin.getUserId()+"Your Request No "+tnxrequest.getReqId()+" is submitted successfully and pending for Approval.");
 		model.addAttribute("message","Your Request No "+tnxrequest.getReqId()+" is submitted successfully and pending for Approval.");
 		
 		
@@ -79,7 +82,8 @@ public class CreateRequestController {
 	@RequestMapping(value = "/viewRequestLoad", method = RequestMethod.GET)
 	   public ModelAndView viewRequestLoad(@RequestParam("userid") Integer userid, ModelMap model,HttpServletRequest request) {
 		//User userLoggedin= (User)request.getSession().getAttribute("user");
-		List<TransactionRequest> notfList= baseDAO.fetchAll(userid, "requestedBy", TransactionRequest.class.getName());
+		LOGGER.info("Enter viewRequestLoad userid ::"+userid);
+		List<TransactionRequest> notfList= baseDAO.fetchAllDesc(userid, "requestedBy", "reqId", TransactionRequest.class.getName());
 		/*if(userLoggedin.getRole()==0)
 		{
 			

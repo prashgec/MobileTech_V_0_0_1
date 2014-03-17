@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,6 +36,8 @@ import com.mob.mobiletech.util.CommonUtils;
  */
 @Controller
 public class RechargeController implements ServletContextAware{
+	
+	private final Logger LOGGER= Logger.getLogger(RechargeController.class);
 	
 	private ServletContext servletContext;
 	@Override
@@ -65,10 +68,11 @@ public class RechargeController implements ServletContextAware{
 	@RequestMapping(value = "/rechargeLoad", method = RequestMethod.GET)
 	public ModelAndView rechargeLoad(ModelMap model, HttpServletRequest request)
 	{
+		
 	TransactionRecharge transactionRecharge= new TransactionRecharge();
 	User userLoggedin= (User)request.getSession().getAttribute("user");
 	
-	
+	LOGGER.info("rechargeLoad :: userid ::"+userLoggedin.getUserId());
 	Map option= new HashMap<String, String>();
 	option.put("1", "Mobile Recharge");
 	option.put("2", "Data Card");
@@ -95,23 +99,25 @@ public class RechargeController implements ServletContextAware{
 	}
 	
 	@RequestMapping(value = "/rechargeSubmit", method = RequestMethod.POST)
-	public ModelAndView createRequestSubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
+	public ModelAndView rechargeSubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		LOGGER.info("rechargeSubmit :: Userid :: "+userLoggedin.getUserId());
 		if(tnxrecharge.getTnxAmount()>userLoggedin.getAvailableBalance())
 		{
 			model.addAttribute("error","003");
+			LOGGER.info("ERROR generated 003 in rechargeSubmit userid ::"+userLoggedin.getUserId());
 			return new ModelAndView("recharge","tnxrecharge",tnxrecharge);
 		}
 		tnxrecharge.setUserId(userLoggedin.getUserId());
 		tnxrecharge.setPrntId(userLoggedin.getPrntId());
 		tnxrecharge.setTnxDate(CommonUtils.getDate());
 		baseDAO.saveOrUpdate(tnxrecharge);
-		
+		LOGGER.info("initial transaction saved userid :: "+userLoggedin.getUserId()+"tnxID ::"+tnxrecharge.getTnxId());
 		Float commission=baseDAO.getCommission(tnxrecharge.getOperator());
 	//	userLoggedin.recharge(tnxrecharge.getTnxAmount().floatValue(), commission);
 		String returnVal=CommonUtils.recharge(tnxrecharge.getMobNo(), tnxrecharge.getTnxAmount(), tnxrecharge.getTnxId(), tnxrecharge.getOperator());
-		
+		LOGGER.info("recharge response :: Userid ::"+userLoggedin.getUserId()+" -->>"+returnVal);
 		if (returnVal!= null)
 		{
 			
@@ -140,12 +146,17 @@ public class RechargeController implements ServletContextAware{
 			baseDAO.saveOrUpdate(userLoggedin);
 			model.addAttribute("access", "disable");
 			request.getSession().setAttribute("user", userLoggedin);
+			LOGGER.info("userid ::"+userLoggedin.getUserId()+"Recharge successfull with ref id "+strArr[0]);
 			model.addAttribute("message", "Recharge successfull with ref id "+strArr[0]);
 		}
 		else
 		{
+			LOGGER.info("userid ::"+userLoggedin.getUserId()+"recharge not successfull");
 			tnxrecharge.setTnxStatus(1);
+			if(strArr.length>=8)
 			model.addAttribute("error", "Recharge unsuccessfull with ref id "+strArr[7] +" and error message is "+strArr[6]);
+			else
+				model.addAttribute("error", "Recharge unsuccessfull with error message  "+strArr[6]);	
 		}}
 		
 		tnxrecharge.setRemainingAmount(userLoggedin.getAvailableBalance());

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,6 +37,7 @@ import com.mob.mobiletech.util.CommonUtils;
 @Controller
 public class LandLineBillPayController implements ServletContextAware{
 	
+	private final Logger LOGGER= Logger.getLogger(LandLineBillPayController.class);
 	private ServletContext servletContext;
 	@Override
 	public void setServletContext(ServletContext servletContext) {
@@ -65,10 +67,12 @@ public class LandLineBillPayController implements ServletContextAware{
 	@RequestMapping(value = "/landLineBillPayLoad", method = RequestMethod.GET)
 	public ModelAndView rechargeLoad(ModelMap model, HttpServletRequest request)
 	{
+		
+		
 	TransactionRecharge transactionRecharge= new TransactionRecharge();
 	User userLoggedin= (User)request.getSession().getAttribute("user");
 	
-	
+	LOGGER.info("enter landLineBillPayLoad userid ::" +userLoggedin.getUserId());
 	Map option= new HashMap<String, String>();
 //	option.put("1", "Mobile Recharge");
 //	option.put("2", "Data Card");
@@ -97,9 +101,10 @@ public class LandLineBillPayController implements ServletContextAware{
 	}
 	
 	@RequestMapping(value = "/landLineBillPaySubmit", method = RequestMethod.POST)
-	public ModelAndView createRequestSubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
+	public ModelAndView landLineBillPaySubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		LOGGER.info("enter landLineBillPaySubmit userid ::"+userLoggedin.getUserId());
 		if(tnxrecharge.getTnxAmount()>userLoggedin.getAvailableBalance())
 		{
 			model.addAttribute("error","003");
@@ -115,6 +120,7 @@ public class LandLineBillPayController implements ServletContextAware{
 	//	userLoggedin.recharge(tnxrecharge.getTnxAmount().floatValue(), commission);
 		
 		String returnVal=CommonUtils.landLineBillPay(tnxrecharge.getMobNo(), tnxrecharge.getTnxAmount(), tnxrecharge.getTnxId(),tnxrecharge.getOperator(),tnxrecharge.getAccount());
+		LOGGER.info("enter landLineBillPaySubmit userid ::"+userLoggedin.getUserId()+" joloresponse "+returnVal);
      //	userLoggedin.recharge(tnxrecharge.getTnxAmount().floatValue(), userLoggedin.getCommission());
 		//userLoggedin.setAvailableBalance(userLoggedin.getAvailableBalance()-tnxrecharge.getTnxAmount()+(tnxrecharge.getTnxAmount()*userLoggedin.getCommission()/100));
 		//userLoggedin.setUsedBalance(userLoggedin.getUsedBalance()+tnxrecharge.getTnxAmount()-(tnxrecharge.getTnxAmount()*userLoggedin.getCommission()/100));

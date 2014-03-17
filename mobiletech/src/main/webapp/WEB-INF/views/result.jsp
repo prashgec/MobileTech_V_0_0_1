@@ -98,7 +98,9 @@
         <th><fmt:message key="label.request.reqid" /></th>
         <th><fmt:message key="label.request.type" /></th>
         <th><fmt:message key="label.request.requestername" /></th>
-        
+        <th><fmt:message key="label.request.createdate" /></th>
+        <th><fmt:message key="label.request.previousbal" /></th>
+        <th><fmt:message key="label.request.currentbal" /></th>
         <th><fmt:message key="label.request.reqremark" /></th>
         <th><fmt:message key="label.request.aprremark" /></th>
         <th><fmt:message key="label.message.action" /></th>
@@ -113,7 +115,9 @@
         <td><c:out value="${ob.reqId}"/></td>
         <td><c:out value="${ob.reqType}"/></td>
         <td><c:out value="${ob.requesterName}"/></td>
-        
+        <td><c:out value="${ob.createDate}"/></td>
+        <td><c:out value="${ob.previousBal}"/></td>
+        <td><c:out value="${ob.currentBal}"/></td>
         <td><c:out value="${ob.requesterRemark}"/></td>
         <td><c:out value="${ob.approverRemark}"/></td>
         <td><a class='iframe' href="approveRequestLoad?reqid=${ob.reqId}&reqtype=${ob.reqType}&username=${ob.requesterName}"><img alt="Edit" src="<c:url value='/resources/images/edit.png'/>"></a> &nbsp;&nbsp;&nbsp;

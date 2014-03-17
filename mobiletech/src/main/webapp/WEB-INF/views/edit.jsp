@@ -70,12 +70,22 @@
 							value="<c:out value="${status.value}"/>" class="field">
 					</spring:bind>
 					</td>
+				<c:if test="${sessionScope.user.role eq 0}">	
 				<td><fmt:message key="label.message.password" /></td><td>
 				<spring:bind path="user.password">
 						<input type="text" class="right curved borderL" readonly="readonly" name="<c:out value="${status.expression}"/>" placeholder="<fmt:message key="label.message.password" />"
 							value="<c:out value="${status.value}"/>" class="field">
 					</spring:bind>
 					</td>
+					</c:if>
+				<c:if test="${sessionScope.user.role ne 0}">	
+				<td><fmt:message key="label.message.password" /></td><td>
+				<spring:bind path="user.password">
+						<input type="password" class="right curved borderL" readonly="readonly" name="<c:out value="${status.expression}"/>" placeholder="<fmt:message key="label.message.password" />"
+							value="<c:out value="${status.value}"/>" class="field">
+					</spring:bind>
+					</td>	
+					</c:if>
 					</tr>
 					
 	

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,6 +30,8 @@ import com.mob.mobiletech.util.CommonUtils;
  */
 @Controller
 public class MyProfileController {
+	
+	private final Logger LOGGER= Logger.getLogger(MyProfileController.class);
 	@Autowired
 	BaseDAO baseDAO;
 	
@@ -52,7 +55,7 @@ public class MyProfileController {
 
 	@RequestMapping(value = "/viewProfile", method = RequestMethod.GET)
 	   public ModelAndView viewProfile(@RequestParam("userid") Integer userid, ModelMap model) {
-	     
+	    LOGGER.info("Inside viewProfile  userid :"+userid );
 	      List<Object> userList= baseDAO.fetchAll(userid, "userId", User.class.getName());
 	      
 	      model.addAttribute("access", "read");
@@ -65,6 +68,7 @@ public class MyProfileController {
 	
 	@RequestMapping(value = "/viewChild", method = RequestMethod.GET)
 	   public ModelAndView viewChild(@RequestParam("userid") Integer userid, ModelMap model) {
+		LOGGER.info("Enter viewChild userid :"+ userid );
 	     
 	      List<Object> userList= baseDAO.fetchAll(userid, "prntId", User.class.getName());
 	      model.addAttribute("menu", "viewchild");
@@ -73,7 +77,7 @@ public class MyProfileController {
 	
 	@RequestMapping(value = "/viewRetailer", method = RequestMethod.GET)
 	   public ModelAndView viewRetailer(@RequestParam("userid") Integer userid, ModelMap model) {
-	     
+	     LOGGER.info("Enter viewRetailer userid :"+userid);
 	      List<Object> userList= baseDAO.fetchAll(2, "role", User.class.getName());
 	      model.addAttribute("menu", "viewRetailer");
 	      return new ModelAndView("viewRetailer", "userlst", userList);
@@ -93,7 +97,7 @@ public class MyProfileController {
 	
 	@RequestMapping(value = "/editUserLoad", method = RequestMethod.GET)
 	   public ModelAndView editUserLoad(@RequestParam("userid") Integer userid, ModelMap model) {
-	     
+		LOGGER.info("Enter editUserLoad userid :"+userid);
 	      List<Object> userList= baseDAO.fetchAll(userid, "userId", User.class.getName());
 	      model.addAttribute("menu", "viewchild");
 	      TransactionRequest txn= new TransactionRequest();
@@ -107,7 +111,9 @@ public class MyProfileController {
 	@RequestMapping(value = "/editUserSubmit", method = RequestMethod.POST)
 	public ModelAndView editUserSubmit(@ModelAttribute("SpringWeb")User user,@RequestParam("amt") int amt, HttpServletRequest request,ModelMap model) 
 	{
+		
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		LOGGER.info("Enter editUserSubmit userLoggedin :"+userLoggedin.getUserId()+" edituser :"+user.getUserId() +"amount "+amt);
 		if(amt>0)
 		{
 			TransactionRequest txn = new TransactionRequest();
@@ -115,13 +121,16 @@ public class MyProfileController {
 			if (userLoggedin.getRole()==0)
 			{
 				userLoggedin.recharge(txn.getAmt().floatValue(), 0.0F);//changed as per new requirement
+				txn.setPreviousBal(user.getAvailableBalance());
 				user.setAvailableBalance(user.getAvailableBalance()+txn.getAmt());
+				txn.setCurrentBal(user.getAvailableBalance());
 				txn.setApprovalDate(CommonUtils.getSystemDate());
 				txn.setRequestedBy(user.getUserId());
 				txn.setRequestedTo(userLoggedin.getUserId());
 				txn.setRequesterName(user.getFirstName()+" "+user.getLastName());
 				txn.setCreateDate(CommonUtils.getSystemDate());
 				txn.setApproverRemark("A Recharge of Amount "+txn.getAmt() + " is done on your account");
+				
 				baseDAO.saveOrUpdate(userLoggedin);
 				baseDAO.saveOrUpdate(txn);
 			}
@@ -129,6 +138,7 @@ public class MyProfileController {
 			{
 				if(userLoggedin.getAvailableBalance()<=txn.getAmt())
 				{
+					LOGGER.info("Error not enough balance");
 					model.addAttribute("menu", "viewchild");
 					
 				      model.addAttribute("txn", txn);
@@ -137,7 +147,10 @@ public class MyProfileController {
 				}
 				else{
 					userLoggedin.recharge(txn.getAmt().floatValue(), 0.0F);
+					txn.setPreviousBal(user.getAvailableBalance());
 					user.setAvailableBalance(user.getAvailableBalance()+txn.getAmt());
+					txn.setCurrentBal(user.getAvailableBalance());
+					//user.setAvailableBalance(user.getAvailableBalance()+txn.getAmt());
 					txn.setApprovalDate(CommonUtils.getSystemDate());
 					txn.setRequestedBy(user.getUserId());
 					txn.setRequestedTo(userLoggedin.getUserId());
@@ -149,7 +162,8 @@ public class MyProfileController {
 				}
 			}
 		}
-		
+		LOGGER.info("loggedin"+userLoggedin.getUserId()+ "user updated balance "+userLoggedin.getAvailableBalance());
+		LOGGER.info("edit "+user.getUserId()+ "user updated balance "+user.getAvailableBalance());
 		baseDAO.update(user);
 		
 		request.setAttribute("user", userLoggedin);

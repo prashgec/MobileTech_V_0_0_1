@@ -77,8 +77,13 @@ $(document).ready(function(){
 						<div class=" tCenter whiteLink right clearfix">
 							<strong>Welcome ${sessionScope.user.firstName} &nbsp;&nbsp;&nbsp;&nbsp; 
 							<a href="logout"><fmt:message key="label.logout" /></a></strong><br />
-							<strong>Parent </strong> &nbsp;<strong> ${sessionScope.user.prntName}  (${sessionScope.user.prntPhoneNo})&nbsp;&nbsp; </strong><br />
-							<strong>Balance </strong> &nbsp;<strong> ${sessionScope.user.availableBalance}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </strong>
+							<c:if test="${sessionScope.user.role eq 2}">
+							<strong>Distributer: </strong> &nbsp;<strong> ${sessionScope.user.prntName}  (${sessionScope.user.prntPhoneNo})&nbsp;&nbsp; </strong><br />
+							</c:if>
+							<c:if test="${sessionScope.user.role ne 2}">
+							<strong>Admin: </strong> &nbsp;<strong> ${sessionScope.user.prntName}  (${sessionScope.user.prntPhoneNo})&nbsp;&nbsp; </strong><br />
+							</c:if>
+							<strong>Balance: </strong> &nbsp;<strong> ${sessionScope.user.availableBalance}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </strong>
 							
 						</div>
 					</c:otherwise>

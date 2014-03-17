@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,6 +31,7 @@ import com.mob.mobiletech.form.CommissionForm;
 @Controller
 public class CommissionController {
 	
+	private final Logger LOGGER= Logger.getLogger(CommissionController.class);
 	@Autowired
 	BaseDAO baseDAO;
 	
@@ -61,7 +63,7 @@ public class CommissionController {
 			(List<Object>)baseDAO.fetchAll(i,"dataId", ReferenceData.class.getName()));
 		}*/
 		
-		
+		LOGGER.info("enter commission Controller viewCommission");
 		commissionForm.setList(tempList);
 		return new ModelAndView("commission","commission",commissionForm);
 	}
@@ -69,9 +71,10 @@ public class CommissionController {
 	@RequestMapping(value ="/saveCommission", method= RequestMethod.POST)
 	public ModelAndView saveCommission(@ModelAttribute("commission")CommissionForm commissionForm, ModelMap model, HttpServletRequest request)
 	{
-		
+		LOGGER.info("enter commission Controller saveCommission");
 		baseDAO.saveAll((commissionForm.getList()));
 		model.addAttribute("message", "Commission Updated Successfully :)");
+		LOGGER.info("Commission Updated Successfully :)");
 		return new ModelAndView("commission","commission",commissionForm);
 		
 		

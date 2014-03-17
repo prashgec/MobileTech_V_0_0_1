@@ -45,7 +45,24 @@ public class TransactionRequest {
 	private String createDate;
 	@Column(name="approval_date")
 	private String approvalDate;
+	@Column(name="previous_Bal")
+	private Float previousBal;
+	@Column(name="current_Bal")
+	private Float currentBal;
+		
 	
+	public Float getPreviousBal() {
+		return previousBal;
+	}
+	public void setPreviousBal(Float previousBal) {
+		this.previousBal = previousBal;
+	}
+	public Float getCurrentBal() {
+		return currentBal;
+	}
+	public void setCurrentBal(Float currentBal) {
+		this.currentBal = currentBal;
+	}
 	
 	public Integer getAmt() {
 		return amt;

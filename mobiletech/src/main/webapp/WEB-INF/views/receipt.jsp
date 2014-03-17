@@ -21,7 +21,7 @@
 		<fieldset id="inputs">
 			
 			<table class="center w23">
-			<th > <img alt="Success" width="32" height="32" src="<c:url value='/resources/images/success.png'/>"> &nbsp;&nbsp; <font color="green"> <c:out value="${message}"></c:out></font>	</th>
+			<th > <c:if test="${message ne null}"><img alt="Success" width="32" height="32" src="<c:url value='/resources/images/success.png'/>"></c:if> &nbsp;&nbsp; <font color="green"> <c:out value="${message}"></c:out></font>	</th>
 				<tr>
 				<td><fmt:message key="label.recharge.datetime"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td><fmt:formatDate pattern="dd/MM/yyyy 'at' hh:mm a" 

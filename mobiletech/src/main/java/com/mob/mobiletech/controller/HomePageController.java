@@ -93,6 +93,7 @@ public class HomePageController  {
 	@RequestMapping(value = "/loginSubmit", method = RequestMethod.POST)
 	public ModelAndView loginSubmit(@ModelAttribute("SpringWeb")User user,HttpServletRequest request,ModelMap model) 
 	{
+		logger.info("Login attempts from username ::"+user.getUserName());
 		user=loginValidation.validate(user.getUserName(), user.getPassword());
 		if(user!=null){
 			user.setLastLogin(CommonUtils.getSystemDate());
@@ -116,11 +117,12 @@ public class HomePageController  {
 			
 			model.addAttribute("access", "read");
 			model.addAttribute("menu", "profile");
-			
+			logger.info("Login success from username ::"+user.getUserName());
 		return new ModelAndView("createUser","user",user);}
 		else
 		{
 			model.addAttribute("error", "001");
+			logger.info("Login fails from username ::"+user.getUserName());
 			return new ModelAndView("login","loginForm",new User());
 		}
 			
@@ -138,8 +140,8 @@ public class HomePageController  {
 	
 	@RequestMapping(value = "/viewNotification", method = RequestMethod.GET)
 	   public ModelAndView viewNotification(@RequestParam("userid") Integer userid, ModelMap model) {
-	     
-	      List<Object> reqList= loginValidation.getBaseDAO().fetchAll(userid, "requestedTo", TransactionRequest.class.getName());
+	     logger.info("viewNotification userid ::"+userid);
+	      List<Object> reqList= loginValidation.getBaseDAO().fetchAllDesc(userid, "requestedTo","reqId", TransactionRequest.class.getName());
 	      model.addAttribute("menu", "notification");
 	      return new ModelAndView("result", "notflst", reqList);
 	   }

@@ -8,11 +8,13 @@ import java.util.List;
 
 
 
+
 import javax.persistence.Entity;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -83,6 +85,19 @@ public class BaseDAO {
     	Criteria criteria = session.createCriteria(clazz);
     	if(prop!=null)
     	criteria.add(Restrictions.eq(prop, id));
+    	return criteria.list();
+    	//session.getTransaction().commit();
+    	//session.close();
+    }
+    
+    public <T extends Object,U extends Object > List<U> fetchAllDesc(T id,String prop,String order, String clazz)
+    {
+    	Session session= sessionFactory.openSession();
+    	session.getTransaction().begin();
+    	Criteria criteria = session.createCriteria(clazz);
+    	if(prop!=null)
+    	criteria.add(Restrictions.eq(prop, id));
+    	criteria.addOrder(Order.desc(order));
     	return criteria.list();
     	//session.getTransaction().commit();
     	//session.close();

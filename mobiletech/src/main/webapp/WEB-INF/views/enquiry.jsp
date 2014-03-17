@@ -4,6 +4,7 @@
 	<br>
 	<h1>&nbsp;&nbsp;&nbsp;Please fill the form for Enquiry</h1>
 	<hr>
+	<font color="green"><c:out value="${message}"/></font>
 	<div class="clearfix">
 		<br>
 		<br>
