@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 
 
 
@@ -122,7 +124,7 @@ public class HomePageController  {
 		else
 		{
 			model.addAttribute("error", "001");
-			logger.info("Login fails from username ::"+user.getUserName());
+			logger.info("Login fails from username ::");
 			return new ModelAndView("login","loginForm",new User());
 		}
 			
@@ -148,6 +150,43 @@ public class HomePageController  {
 	
 
 
+@RequestMapping(value = "/loginSubmitWeb", method = RequestMethod.POST)
+	
+	public @ResponseBody User loginSubmitWeb(@ModelAttribute("SpringWeb")User user,HttpServletRequest request,ModelMap model) 
+	{
+		user=loginValidation.validate(user.getUserName(), user.getPassword());
+		if(user!=null){
+			user.setLastLogin(CommonUtils.getSystemDate());
+			if(Constants.ROLE_ADMIN==user.getRole())
+			{
+				try{
+				Float tempBal=Float.parseFloat(CommonUtils.getJoloBalance());
+				user.setAvailableBalance(tempBal);
+				}
+				catch (Exception e) {
+					logger.info("Exception in balance Updation from JOLO URL",e);
+
+				}
+			}
+			//List<Object> notificationlst=new ArrayList<Object>();
+			loginValidation.getBaseDAO().saveOrUpdate(user);
+			//notificationlst=loginValidation.getBaseDAO().fetchAll(user.getUserId(), "requestedTo", TransactionRequest.class.getName());
+			//request.getSession().setAttribute("notification", notificationlst.size());
+			//request.getSession().setAttribute("notificationlst", notificationlst);
+			request.getSession().setAttribute("user", user);
+			
+			model.addAttribute("access", "read");
+			model.addAttribute("menu", "profile");
+			
+		return user;}
+		else
+		{
+			model.addAttribute("error", "001");
+			return new User();
+		}
+			
+		
+	}
 
 
 	

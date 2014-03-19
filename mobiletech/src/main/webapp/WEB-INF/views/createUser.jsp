@@ -2,11 +2,33 @@
 <HTML>
 <HEAD><%@ include file="header.jsp"%>
 
+<style>
+	body{font:12px/1.2 Verdana, sans-serif; padding:0 0px;}
+			a:link, a:visited{text-decoration:none;  border-bottom:0px ;}
+			h2{font-size:13px; margin:15px 0 0 0;}
+		</style>
+<script src="<c:url value="/resources/js/jquery.colorbox.js"/>"></script>
+
+		
+<link href="<c:url value="/resources/css/colorbox.css" />" rel="stylesheet"  type="text/css" >
 <script>
 $(document).ready(function(){
     $("#page").validationEngine();
    });
    </script>
+   
+    <script>
+			$(document).ready(function(){
+				//Examples of how to assign the Colorbox event to elements
+			
+				$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+				
+
+				
+			});
+			
+			
+</script>
 
 <TITLE><fmt:message key="title.createuser" /></TITLE>
 
@@ -164,6 +186,17 @@ $(document).ready(function(){
 		</table>
 		
 		
+		
+		</c:if>
+		<c:if test="${access eq 'read'}">
+		<table class="center">
+		<tr>
+		
+		<td><a class="iframe" href="updatePasswordLoad" ><fmt:message key="title.updatepassword"/></a></td>
+		<td>&nbsp;</td>
+		
+		</tr>
+		</table>
 		
 		</c:if>
 		
