@@ -113,6 +113,7 @@ public class MyProfileController {
 	{
 		
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		userLoggedin=(User)baseDAO.fetchAll(userLoggedin.getUserId(), "userId", User.class.getName()).get(0);// temperory added for cuncurrent threads
 		LOGGER.info("Enter editUserSubmit userLoggedin :"+userLoggedin.getUserId()+" edituser :"+user.getUserId() +"amount "+amt);
 		if(amt>0)
 		{
@@ -123,6 +124,7 @@ public class MyProfileController {
 				userLoggedin.recharge(txn.getAmt().floatValue(), 0.0F);//changed as per new requirement
 				txn.setPreviousBal(user.getAvailableBalance());
 				user.setAvailableBalance(user.getAvailableBalance()+txn.getAmt());
+				userLoggedin.setBalance(userLoggedin.getBalance()+txn.getAmt());
 				txn.setCurrentBal(user.getAvailableBalance());
 				txn.setApprovalDate(CommonUtils.getSystemDate());
 				txn.setRequestedBy(user.getUserId());

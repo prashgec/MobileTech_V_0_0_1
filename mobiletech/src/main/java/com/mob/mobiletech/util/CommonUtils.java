@@ -123,7 +123,7 @@ public class CommonUtils {
 	{
 
 			
-			return "http://jolo.in/api/utility.php?mode="+Constants.JOLO_MODE+"&key="+Constants.JOLO_APP_KEY+"&operator="+operator+"&service="+mobNo+"&amount="+amt+"&cycle="+cycle+"&duedate"+duedate+"&orderid="+tnxId;
+			return "http://jolo.in/api/utility.php?mode="+Constants.JOLO_MODE+"&key="+Constants.JOLO_APP_KEY+"&operator="+operator+"&service="+mobNo+"&amount="+amt+"&cycle="+cycle+"&duedate="+duedate+"&orderid="+tnxId;
 			
 	}
 	public static synchronized String landLineBillPay(String mobNo,Integer amt,Integer tnxId, String operator,String account) {

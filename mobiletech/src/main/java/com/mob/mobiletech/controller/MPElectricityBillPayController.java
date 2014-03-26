@@ -97,6 +97,7 @@ public class MPElectricityBillPayController implements ServletContextAware{
 	public ModelAndView mpElectricityBillPaySubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		User admin=baseDAO.getUser("admin");	
 		LOGGER.info("Enter mpElectricityBillPaySubmit userid ::"+userLoggedin.getUserId());
 		if(tnxrecharge.getTnxAmount()>userLoggedin.getAvailableBalance())
 		{
@@ -130,11 +131,15 @@ public class MPElectricityBillPayController implements ServletContextAware{
 		
 		if(Constants.SUCCESS.equalsIgnoreCase(strArr[1])||Constants.PENDING.equalsIgnoreCase(strArr[1]))
 		{
+			//admin= (User)baseDAO.fetchAll("admin", "userName", User.class.getName()).get(0);
 			userLoggedin.recharge(tnxrecharge.getTnxAmount().floatValue(), commission);
 			Float tempamt=tnxrecharge.getTnxAmount().floatValue()-((commission*tnxrecharge.getTnxAmount())/100);
 			tnxrecharge.setChargedAmount(tempamt);
+			//admin.setUsedBalance(admin.getUsedBalance()-tempamt);
+			admin.setBalance(admin.getBalance()-tempamt);
 			tnxrecharge.setTnxStatus(0);
 			baseDAO.saveOrUpdate(userLoggedin);
+			baseDAO.saveOrUpdate(admin);
 			model.addAttribute("access", "disable");
 			request.getSession().setAttribute("user", userLoggedin);
 			model.addAttribute("message", "Bill Payment successfull with ref id "+strArr[0]);
@@ -142,7 +147,7 @@ public class MPElectricityBillPayController implements ServletContextAware{
 		else
 		{
 			tnxrecharge.setTnxStatus(1);
-			model.addAttribute("error", "Bill Payment unsuccessfull with ref id "+strArr[7] +" and error message is "+strArr[6]);
+			model.addAttribute("error", "Bill Payment unsuccessfull with ref id "+strArr[5]);
 		}}
 		tnxrecharge.setRemainingAmount(userLoggedin.getAvailableBalance());
 		baseDAO.saveOrUpdate(tnxrecharge);

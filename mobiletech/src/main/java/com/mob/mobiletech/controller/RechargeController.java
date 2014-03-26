@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.google.gson.Gson;
 import com.mob.mobiletech.constants.Constants;
@@ -35,6 +37,7 @@ import com.mob.mobiletech.util.CommonUtils;
  *
  */
 @Controller
+
 public class RechargeController implements ServletContextAware{
 	
 	private final Logger LOGGER= Logger.getLogger(RechargeController.class);
@@ -99,7 +102,7 @@ public class RechargeController implements ServletContextAware{
 	}
 	
 	@RequestMapping(value = "/rechargeSubmit", method = RequestMethod.POST)
-	public ModelAndView rechargeSubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
+	public ModelAndView rechargeSubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model,RedirectAttributes ra) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
 		LOGGER.info("rechargeSubmit :: Userid :: "+userLoggedin.getUserId());
@@ -147,45 +150,59 @@ public class RechargeController implements ServletContextAware{
 			model.addAttribute("access", "disable");
 			request.getSession().setAttribute("user", userLoggedin);
 			LOGGER.info("userid ::"+userLoggedin.getUserId()+"Recharge successfull with ref id "+strArr[0]);
-			model.addAttribute("message", "Recharge successfull with ref id "+strArr[0]);
+			request.getSession().setAttribute("message", "Recharge successfull with ref id "+strArr[0]);
 		}
 		else
 		{
 			LOGGER.info("userid ::"+userLoggedin.getUserId()+"recharge not successfull");
 			tnxrecharge.setTnxStatus(1);
 			if(strArr.length>=8)
-			model.addAttribute("error", "Recharge unsuccessfull with ref id "+strArr[7] +" and error message is "+strArr[6]);
+				request.getSession().setAttribute("error", "Recharge unsuccessfull with ref id "+strArr[7] +" and error message is "+strArr[6]);
 			else
-				model.addAttribute("error", "Recharge unsuccessfull with error message  "+strArr[6]);	
+				request.getSession().setAttribute("error", "Recharge unsuccessfull with error message  "+strArr[6]);	
 		}}
 		
 		tnxrecharge.setRemainingAmount(userLoggedin.getAvailableBalance());
 		baseDAO.saveOrUpdate(tnxrecharge);
 		 
-		Map option= new HashMap<String, String>();
+		/*Map option= new HashMap<String, String>();
 		option.put("1", "Mobile Recharge");
 		option.put("2", "Data Card");
 		option.put("3", "DTH");
 		option.put("4", "Postpaid Recharge");
 		model.addAttribute("option",option);
 		
-		Gson gson = new Gson();
+		Gson gson = new Gson();*/
 		
-		model.addAttribute("list1", gson.toJson(baseDAO.fetchAll(1, "dataId", ReferenceData.class.getName())));
+		/*model.addAttribute("list1", gson.toJson(baseDAO.fetchAll(1, "dataId", ReferenceData.class.getName())));
 		model.addAttribute("list2", gson.toJson(baseDAO.fetchAll(2, "dataId", ReferenceData.class.getName())));
 		model.addAttribute("list3", gson.toJson(baseDAO.fetchAll(3, "dataId", ReferenceData.class.getName())));
-		model.addAttribute("list4", gson.toJson(baseDAO.fetchAll(4, "dataId", ReferenceData.class.getName())));
+		model.addAttribute("list4", gson.toJson(baseDAO.fetchAll(4, "dataId", ReferenceData.class.getName())));*/
 		if(returnVal== null){
-			model.addAttribute("error", "004");
+			request.getSession().setAttribute("error", "004");
 		}
 		//model.addAttribute("access", "read");
 		model.addAttribute("menu", "recharge");
 		//model.addAttribute("list1", servletContext.getAttribute("1"));
 		//model.addAttribute("message","Your Request No "+tnxrecharge.getTnxId()+" is submitted successfully and pending for Approval.");
-		
-		
-	return new ModelAndView("receipt","tnxrecharge",tnxrecharge);}
+		ModelAndView mv= new ModelAndView(new RedirectView("rechargeSubmit"));
+		request.getSession().setAttribute("tnxrecharge",tnxrecharge);
+		//ra.addFlashAttribute("tnxrecharge",tnxrecharge);
+	return mv;
+	}
 	
 	
-
+	@RequestMapping(value = "/rechargeSubmit", method = RequestMethod.GET)
+	public ModelAndView rechargeSubmitGet( HttpServletRequest request,ModelMap model) 
+	{
+		TransactionRecharge transactionRecharge=(TransactionRecharge)request.getSession().getAttribute("tnxrecharge");
+		model.addAttribute("menu", "recharge");
+		model.addAttribute("message", request.getSession().getAttribute("message"));
+		model.addAttribute("error", request.getSession().getAttribute("error"));
+		request.getSession().removeAttribute("tnxrecharge");
+		request.getSession().removeAttribute("message");
+		request.getSession().removeAttribute("error");
+		return new ModelAndView("receipt","tnxrecharge",transactionRecharge);
+		
+	}
 }

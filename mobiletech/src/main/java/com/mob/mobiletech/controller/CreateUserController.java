@@ -112,6 +112,10 @@ public class CreateUserController  {
 			user.setLoginStatus(Constants.LOGIN_STATUS_PENDING_FOR_APPROVAL);
 			baseDAO.saveOrUpdate(tnx);
 		}
+		else
+		{
+			userLoggedin.setBalance(userLoggedin.getBalance()+user.getAvailableBalance());
+		}
 		baseDAO.saveOrUpdate(userLoggedin);
 		baseDAO.saveOrUpdate(user);
 		

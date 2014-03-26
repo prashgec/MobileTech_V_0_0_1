@@ -96,6 +96,7 @@ public class HomePageController  {
 	public ModelAndView loginSubmit(@ModelAttribute("SpringWeb")User user,HttpServletRequest request,ModelMap model) 
 	{
 		logger.info("Login attempts from username ::"+user.getUserName());
+	
 		user=loginValidation.validate(user.getUserName(), user.getPassword());
 		if(user!=null){
 			user.setLastLogin(CommonUtils.getSystemDate());
@@ -111,7 +112,9 @@ public class HomePageController  {
 				}
 			}
 			//List<Object> notificationlst=new ArrayList<Object>();
+	
 			loginValidation.getBaseDAO().saveOrUpdate(user);
+	
 			//notificationlst=loginValidation.getBaseDAO().fetchAll(user.getUserId(), "requestedTo", TransactionRequest.class.getName());
 			//request.getSession().setAttribute("notification", notificationlst.size());
 			//request.getSession().setAttribute("notificationlst", notificationlst);

@@ -1,0 +1,5 @@
+INDEX VERSION 1.126
+F:\MyStuff\MobileTech_V_0_0_1\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2326935279.index
+\mobiletech\src\main\java
+F:\MyStuff\MobileTech_V_0_0_1\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\44380297.index
+\mobiletech\src\main\java

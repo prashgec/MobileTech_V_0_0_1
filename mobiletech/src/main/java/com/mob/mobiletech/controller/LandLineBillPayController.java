@@ -104,6 +104,7 @@ public class LandLineBillPayController implements ServletContextAware{
 	public ModelAndView landLineBillPaySubmit(@ModelAttribute("SpringWeb")TransactionRecharge tnxrecharge, HttpServletRequest request,ModelMap model) 
 	{
 		User userLoggedin= (User)request.getSession().getAttribute("user");
+		User admin=baseDAO.getUser("admin");
 		LOGGER.info("enter landLineBillPaySubmit userid ::"+userLoggedin.getUserId());
 		if(tnxrecharge.getTnxAmount()>userLoggedin.getAvailableBalance())
 		{
@@ -143,11 +144,14 @@ public class LandLineBillPayController implements ServletContextAware{
 			
 		{
 			userLoggedin.recharge(tnxrecharge.getTnxAmount().floatValue(), commission);
-			
+			admin= (User)baseDAO.fetchAll("admin", "userName", User.class.getName()).get(0);
 			Float tempamt=tnxrecharge.getTnxAmount().floatValue()-((commission*tnxrecharge.getTnxAmount())/100);
 			tnxrecharge.setChargedAmount(tempamt);
+			//admin.setUsedBalance(admin.getUsedBalance()-tempamt);
+			admin.setBalance(admin.getBalance()-tempamt);
 			tnxrecharge.setTnxStatus(0);
 			baseDAO.saveOrUpdate(userLoggedin);
+			baseDAO.saveOrUpdate(admin);
 			model.addAttribute("access", "disable");
 			request.getSession().setAttribute("user", userLoggedin);
 			model.addAttribute("message", "Bill Payment successfull with ref id "+strArr[0]);

@@ -85,9 +85,19 @@ public class User {
 	 private String prntPhoneNo;
 	 @Column(name="prnt_name")
 	 private String prntName;
+	 @Column(name="balance")
+	 private Float balance;
 	 
 	 
 	 
+	 
+	public Float getBalance() {
+		return balance;
+	}
+	public void setBalance(Float balance) {
+		this.balance = balance;
+	}
+	
 	public String getPrntPhoneNo() {
 		return prntPhoneNo;
 	}

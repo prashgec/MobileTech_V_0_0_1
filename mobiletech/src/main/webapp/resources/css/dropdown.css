@@ -1,0 +1,14 @@
+ul#nav {padding-left:16px;background-image:url(../images/buehne_5_intra.gif)}
+clear {clear:both}
+ul.drop a {color:#87A7CE;line-height:14px;display:block;text-decoration: none;
+background-repeat:no-repeat;background-image:url(../images/diagonale_hauptnavigation.gif);background-position:right;
+    height:10px;padding-right:22px; float:left;}
+ul.drop, ul.drop li, ul.drop ul { list-style: none; margin: 0; padding: 0; background: #039;
+color: #fff;}
+ul.drop { position: relative; z-index: 597; float: left; }
+ul.drop li { float: left; line-height: 1.0em; vertical-align: middle; zoom: 1; padding: 5px 10px; }
+ul.drop li ul { visibility: hidden; position: absolute; top: 100%; left: 20px; z-index: 598; width: 150px; margin-left:50px;}
+ul.drop ul a {color:#87A7CE;line-height:14px;display:block;text-decoration: none;height:10px;padding-left:10px; float:left;background-image:none;}
+ul.drop ul li { float: none; }
+ul.drop ul ul { top: -2px; left: 100%; }
+.drop img{width:22px;height:24px;background-color:#039;margin-left:-20px;vertical-align:top}
