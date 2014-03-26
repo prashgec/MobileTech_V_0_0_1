@@ -35,7 +35,29 @@ $(document).ready(function(){
     $("#login").validationEngine();
    });
    </script>
+   
+   <style>
+	body{font:12px/1.2 Verdana, sans-serif; padding:0 0px;}
+			a:link, a:visited{text-decoration:none;  border-bottom:0px ;}
+			h2{font-size:13px; margin:15px 0 0 0;}
+		</style>
+<script src="<c:url value="/resources/js/jquery.colorbox.js"/>"></script>
 
+		
+<link href="<c:url value="/resources/css/colorbox.css" />" rel="stylesheet"  type="text/css" >
+
+  <script>
+			$(document).ready(function(){
+				//Examples of how to assign the Colorbox event to elements
+			
+				$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+				
+
+				
+			});
+			
+			
+</script>
 
 	
 </head>
@@ -57,22 +79,26 @@ $(document).ready(function(){
 						<form id="login" method="post" action="loginSubmit" name="search"
 							class="w25 right">
 							<input type="submit" class="darkButton right   button height30"
-								value="Login" width="20px" height="5px"> <spring:bind
+								value="Login" width="20px" height="5px">
+								<spring:bind
 									path="loginForm.password">
 									<input type="password" placeholder="Password" tabindex="2"
 										name="<c:out value="${status.expression}"/>"
 										value="<c:out value="${status.value}"/>"
 										placeholder="<fmt:message key="home.password"/>" size="20"
 										maxlength="20" class="validate[required] right curved borderL w25 height20 " />
-								</spring:bind> <spring:bind path="loginForm.userName">
-									<input type="text" placeholder="Username" autofocus=""
+								</spring:bind> 
+								<spring:bind path="loginForm.userName">
+									<input type="text" placeholder="Username" 
 										tabindex="1" name="<c:out value="${status.expression}"/>"
 										value="<c:out value="${status.value}"/>"
 										placeholder="<fmt:message key="home.username"/>" size="20"
 										maxlength="20" class="right curved borderL w25 height20 validate[required]" />
 								</spring:bind>
 						</form>
-					</c:when>
+						<a class="tCenter whiteLink right clearfix iframe" href="forgotPasswordLoad" ><fmt:message key="title.forgotpassword"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+						
+						</c:when>
 					<c:otherwise>
 						<div class=" tCenter whiteLink right clearfix">
 							<strong>Welcome ${sessionScope.user.firstName} &nbsp;&nbsp;&nbsp;&nbsp; 
@@ -84,7 +110,9 @@ $(document).ready(function(){
 							<strong>Admin: </strong> &nbsp;<strong> ${sessionScope.user.prntName}  (${sessionScope.user.prntPhoneNo})&nbsp;&nbsp; </strong><br />
 							</c:if>
 							<strong>Balance: </strong> &nbsp;<strong> ${sessionScope.user.availableBalance}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </strong>
-							
+							<c:if test="${sessionScope.user.role eq 0}">
+							<br /><strong>Distributed Balance: </strong> &nbsp;<strong> ${sessionScope.user.balance}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </strong>
+						    </c:if>
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -124,15 +152,18 @@ $(document).ready(function(){
 									</c:if>
 							</a>
 							</li>
-                            <li
+                            <c:if test="${sessionScope.user.role eq 0}">
+ 
+ <li
 								<c:if test="${menu eq 'viewRetailer' }"> class="selected bkgWhite"</c:if>>
-								<a href="viewRetailer?userid=${sessionScope.user.userId}"> <c:if
-										test="${sessionScope.user.role eq 0}">
+								<a href="viewRetailer?userid=${sessionScope.user.userId}"> 
+								
 										
 										<fmt:message key="label.view.retailer" />
-									</c:if> 
+									
 							</a>
 							</li>
+</c:if> 
 							<li
 								<c:if test="${menu eq 'notification' }"> class="selected bkgWhite"</c:if>>
 								<a href="viewNotification?userid=${sessionScope.user.userId}">
